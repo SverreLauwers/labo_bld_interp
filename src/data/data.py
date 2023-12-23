@@ -4,7 +4,7 @@ import torch
 from torch.utils.data import DataLoader
 from torchvision.transforms import v2
 
-from .pokemon_dataset import PokemonDataset
+from .games_dataset import GamesDataset
 
 
 def get_data_loaders(
@@ -22,6 +22,8 @@ def get_data_loaders(
     train_tfms = v2.Compose([
         v2.ToImage(),
         v2.RandomHorizontalFlip(),
+        v2.RandomRotation(90), #extra
+        v2.Pad(100), #extra
         v2.RandomResizedCrop(size, antialias=True),
         v2.ToDtype(torch.float32, scale=True),
         v2.Normalize(mean=norm_mean, std=norm_std),
@@ -35,9 +37,9 @@ def get_data_loaders(
     ])
 
     # Create datasets
-    ds_train = PokemonDataset(data_path, 'train',
+    ds_train = GamesDataset(data_path, 'train',
                               transform=train_tfms)
-    ds_val = PokemonDataset(data_path, 'val',
+    ds_val = GamesDataset(data_path, 'val',
                             transform=val_tfms)
 
     # Create data loaders
